@@ -1,0 +1,255 @@
+﻿@{
+    ViewData["Title"] = "Register";
+}
+
+
+<div class="containerMain">
+
+
+    <div class="containerForm">
+        <div class="containerForm__login">
+            <img class="logoLaudex" src="https://brandia.com.mx/wp-content/uploads/2014/10/laudex_1-1160x700.jpg" alt="laudex"><br>
+            <h2 class="title">Register</h2>
+            <br>
+            <a href="" class="link2">¿Ya tienes una cuenta? Inicia sesion aqui!</a>
+
+            <div class="alert"></div>
+
+            <form action="#" id="formRegister">
+                <div class="contentFormGrid">
+
+                    <div class="containerInput">
+                        <input type="text" class="inp" name="Nombre" id="Nombre" autocomplete="off">
+                        <label for="">Nombre</label>
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="containerInput">
+                        <input type="text" class="inp" name="ApellidoP" id="ApellidoP" autocomplete="off">
+                        <label for="">Apellido paterno</label>
+                        <i class="fa-solid fa-unlock-keyhole"></i>
+                    </div>
+                    <br>
+                    <div class="containerInput">
+                        <input type="text" class="inp" name="ApellidoM" id="ApellidoM" autocomplete="off">
+                        <label for="">Apellido materno</label>
+                        <i class="fa-solid fa-unlock-keyhole"></i>
+                    </div>
+                    <br>
+                    <div class="containerInput">
+                        <input type="text" class="inp" name="UserName" id="UserName" autocomplete="off">
+                        <label for="">UserName</label>
+                        <i class="fa-solid fa-unlock-keyhole"></i>
+                    </div>
+                    <br>
+
+                </div>
+
+
+                <div class="contentFormGrid">
+
+                    <div class="containerInput">
+                        <input type="email" class="inp" name="Email" id="Email" autocomplete="off">
+                        <label for="">Email</label>
+                        <i class="fa-solid fa-unlock-keyhole"></i>
+                    </div>
+                    <br>
+                    <div class="containerInput">
+                        <input type="password" class="inp" name="Pass" id="Pass" autocomplete="off">
+                        <label for="">Password</label>
+                        <i class="fa-solid fa-unlock-keyhole"></i>
+                    </div>
+                    <br>
+                    <div class="containerInput">
+                        <input type="password" class="inp" id="Pass2" autocomplete="off">
+                        <label for="">Repeat password</label>
+                        <i class="fa-solid fa-unlock-keyhole"></i>
+                    </div>
+                    <br>
+                    <button type="submit" class="btnSubmit"> Sign in </button>
+                </div>
+
+            </form>
+
+            <br>
+            <div class="containerSocial">
+                <a target="_blank" href="https://laudex.mx/?utm_source=google&utm_medium=cpc&utm_campaign=tholus_mar_ago22&adgroupid=126641209598&device=c&feeditemid=&loc_physical_ms=9047092&devicemodel=&adposition=&gad_source=1&gclid=Cj0KCQiAh8OtBhCQARIsAIkWb69AFUdsDRafU4y5CYk5PV70sBizHxx2staUA-wwGO8wBxnRVwMPKxQaAtpjEALw_wcB"><i class="fa-solid fa-globe"></i></a>
+                <a target="_blank" href="https://www.youtube.com/channel/UCX4IwbLJnI5BhUqHIr3emGw"><i class="fa-brands fa-youtube"></i></a>
+                <a target="_blank" href="https://www.facebook.com/Laudex/?locale=es_LA"><i class="fa-brands fa-facebook"></i></a>
+            </div>
+            <div>
+
+                <img src="https://laudex.mx/images/students.png" class="imgLaudex" alt="">
+            </div>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+<script src="https://kit.fontawesome.com/da829a2c90.js" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+    const inputs = document.querySelectorAll(".inp");
+
+    const alert = document.querySelector(".alert");
+
+    inputs.forEach(input => {
+        input.addEventListener("focus", () => {
+            input.classList.add("focus");
+        })
+
+        input.addEventListener("blur", () => {
+            if (input.value.trim() == "") {
+                input.value = "";
+                input.classList.remove("focus");
+            }
+        })
+    });
+
+
+
+    const formRegister = document.getElementById("formRegister");
+
+    formRegister.addEventListener("submit", async (e) => {
+
+        e.preventDefault();
+
+        const resValidacion = await validar();
+
+        if (resValidacion) {
+
+            const resRegister = await registrar();
+
+            if (resRegister.correct) {
+                location.href = '@Url.Action("Login")';
+            }
+
+        }
+
+
+    })
+
+    const registrar = async () => {
+
+
+        const Nombre = document.getElementById("Nombre");
+        const ApellidoP = document.getElementById("ApellidoP");
+        const ApellidoM = document.getElementById("ApellidoM");
+        const UserName = document.getElementById("UserName");
+        const Email = document.getElementById("Email");
+        const Pass = document.getElementById("Pass");
+
+
+        var Usuario = {
+            idUsuario: 0,
+            nombre: Nombre.value.trim(),
+            apellidoP: ApellidoP.value.trim(),
+            apellidoM: ApellidoM.value.trim(),
+            userName: UserName.value.trim(),
+            email: Email.value.trim(),
+            pass: Pass.value.trim(),
+        }
+
+
+
+        const responseRegister = await fetch('http://localhost:5054/api/Usuario/add', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(Usuario)
+        })
+
+
+        const responseJson = await responseRegister.json();
+
+
+        if (responseJson.correct) {
+
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: responseJson.message,
+                showConfirmButton: false,
+                timer: 2500
+            });
+
+
+            formRegister.reset();
+
+        }
+        else {
+
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: responseJson.message,
+                footer: ''
+            });
+
+            alert.classList.add("alertWarning");
+            alert.innerHTML = `<span>${responseJson.message}</span>`;
+
+        }
+
+
+
+
+        return responseJson;
+
+
+
+
+    }
+
+
+
+    const validar = async() => {
+
+        let resValidation = true;
+
+        alert.classList.remove("alertWarning");
+        alert.classList.remove("alertError");
+
+        const inputsForm = document.querySelectorAll("#formRegister .inp");
+
+
+        inputsForm.forEach(input => {
+
+
+            if (input.value.trim() === "") {
+
+                alert.classList.add("alertError");
+                alert.innerHTML = `<span> Porfavor completa todos los campos </span>`;
+
+                resValidation = false;
+                
+            } 
+
+
+
+            // switch (input.name){
+
+
+
+            // }
+
+        })
+
+
+        return resValidation;
+
+
+
+    }
+
+
+
+
+</script>

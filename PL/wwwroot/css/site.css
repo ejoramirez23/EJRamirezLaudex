@@ -1,0 +1,351 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+*{
+    margin: 0;
+    padding:0;
+}
+
+
+body {
+    /*  background-color: #031e28; */
+    background-image: url("https://static.wixstatic.com/media/eed407_3b5f678d46ff495ab708929cfa1c994e~mv2.jpeg/v1/fill/w_640,h_426,al_c,lg_1,q_80,enc_auto/eed407_3b5f678d46ff495ab708929cfa1c994e~mv2.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background: rgb(3,30,40);
+    background: linear-gradient(90deg, rgba(3, 30, 40, 0.785) 0%, rgba(3, 30, 40, 0.9) 43%, rgb(3, 80, 95) 100%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.container{
+    margin:0;
+    padding:0;
+}
+
+.containerMain {
+    padding: 100px 0 0 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-family: 'Lato', sans-serif;
+    position: sticky;
+     top: 0;
+    left: 0;
+    overflow-y: auto;
+}
+
+.contentFormGrid {
+    flex-direction: column;
+}
+
+.alert{
+
+    display: none;
+
+}
+
+.alertError {
+    display: block;
+    background-color: #f109095d;
+    color: #ffffff;
+    font-weight: 600;
+    border: 1px solid #d60505e7;
+}
+
+.alertWarning {
+    display: block;
+    background-color: #f8e00d6d;
+    color: #0f0f0f;
+    font-weight: 600;
+    border: 1px solid #c5d605f5;
+}
+
+
+.containerForm {
+    width: 100%;
+    padding: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.title {
+    letter-spacing: 1px;
+    margin: 15px 0;
+}
+
+
+
+.containerForm * {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
+
+.containerForm__login {
+    width: 400px;
+    min-width: 350px;
+    border: 1px solid #c4cacb65;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    flex-direction: column;
+    color: aliceblue;
+    padding: 50px 30px 20px;
+    position: relative;
+    background-color: #0e124f53;
+    backdrop-filter: blur(5px);
+    box-shadow: 10px 8px 19px #a0ccb765;
+    border-top-right-radius: 65px;
+    border-bottom-left-radius: 65px;
+}
+
+    .containerForm__login .logoLaudex {
+        position: absolute;
+        top: -40px;
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0px 0px 15px #a0ccb765;
+    }
+
+    .containerForm__login form {
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+    }
+
+.containerInput {
+    width: 100%;
+    position: relative;
+    height: 50px;
+    margin: 5px 0;
+}
+
+    .containerInput label {
+        position: absolute;
+        top: 14px;
+        left: 45px;
+        color: rgba(240, 248, 255, 0.618);
+        pointer-events: none;
+        transition: .1s;
+    }
+
+    .containerInput i {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        font-size: 20px;
+        color: rgba(240, 248, 255, 0.326);
+        pointer-events: none;
+    }
+
+    .containerInput input {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        border: 1px solid #32716073;
+        padding: 15px 50px 0 50px;
+        background-color: #5c5f6036;
+        color: #eee;
+        outline: none;
+        font-size: 17px;
+    }
+
+
+        .containerInput input:focus {
+            border: 1px solid rgba(7, 196, 76, 0.395)
+        }
+
+
+    .containerInput .inp:focus {
+        animation: focus .1s;
+    }
+
+    .containerInput .focus + label {
+        font-size: 13px;
+        top: 5px;
+        font-weight: 600;
+    }
+
+.btnSubmit {
+    width: 95%;
+    position: relative;
+    height: 45px;
+    margin: 5px 0;
+    background-color: rgb(7, 170, 67);
+    border-radius: 19px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    transition: .21s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .btnSubmit:hover {
+        background-color: rgb(7, 196, 76);
+        width: 100%;
+    }
+
+
+
+.containerInfo {
+    width: 80%;
+    color: aliceblue;
+    padding: 10px 0 50px 0;
+}
+
+.link, .link2 {
+    text-decoration: none;
+    color: rgb(176, 187, 251);
+    font-weight: 900;
+}
+
+    .link:hover {
+        /* color: rgb(127, 186, 250); */
+        color: rgb(127, 250, 229);
+    }
+
+    .link2:hover {
+        color: rgb(127, 250, 229);
+    }
+
+.containerSocial {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+
+    .containerSocial a {
+        color: aliceblue;
+        font-size: 20px;
+        border: 1px solid aliceblue;
+        padding: 10px;
+        border-radius: 50%;
+        transition: .2s;
+    }
+
+
+        .containerSocial a:hover {
+            box-shadow: 0px 0px 10px #005a2fba;
+            color: #058034;
+            background-color: #d6f8e1e9;
+        }
+
+.imgLaudex {
+    display: none;
+}
+
+
+@keyframes focus {
+    0% {
+        scale: 1;
+    }
+
+    50% {
+        scale: 1.02;
+    }
+
+    100% {
+        scale: 1;
+    }
+}
+
+
+@media (min-width: 1050px) {
+    .containerMain {
+        flex-direction: row;
+        height: 100vh;
+        padding: 0;
+    }
+
+    .containerForm {
+        width: 95%;
+        margin: -10px;
+        transform: translateY(-50px);
+    }
+
+    .containerForm__login {
+        width: 70%;
+        overflow: hidden;
+        backdrop-filter: blur(5px);
+    }
+
+    .contentFormGrid {
+        flex-direction: column;
+    }
+
+    .containerForm__login form {
+        flex-direction: row;
+        gap: 60px;
+    }
+
+    .containerInput {
+        margin: 12px 20px;
+    }
+
+        .containerInput .inp {
+            background-color: #061742ae;
+            backdrop-filter: blur(1px);
+        }
+
+    .imgLaudex {
+        display: block;
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        left: 0;
+        bottom: -50px;
+        z-index: -1;
+    }
+
+    .containerForm__login .logoLaudex {
+        position: absolute;
+        top: 20px;
+        right: 50px;
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0px 0px 15px #a0ccb765;
+    }
+
+    .containerSocial {
+        justify-content: end;
+        width: 70%;
+    }
+}
