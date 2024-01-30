@@ -61,10 +61,10 @@ body {
     flex-direction: column;
 }
 
-.alert{
-
+.alert {
     display: none;
-
+    text-align: center;
+    margin: 0;
 }
 
 .alertError {

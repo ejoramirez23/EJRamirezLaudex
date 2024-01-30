@@ -96,7 +96,7 @@
 
     const inputs = document.querySelectorAll(".inp");
 
-    const alert = document.querySelector(".alert");
+    const alerta = document.querySelector(".alert");
 
     inputs.forEach(input => {
         input.addEventListener("focus", () => {
@@ -134,6 +134,8 @@
 
     })
 
+
+
     const registrar = async () => {
 
 
@@ -145,7 +147,7 @@
         const Pass = document.getElementById("Pass");
 
 
-        var Usuario = {
+        let Usuario = {
             idUsuario: 0,
             nombre: Nombre.value.trim(),
             apellidoP: ApellidoP.value.trim(),
@@ -180,11 +182,9 @@
                 timer: 2500
             });
 
-
             formRegister.reset();
 
-        }
-        else {
+        } else {
 
             Swal.fire({
                 icon: "error",
@@ -193,8 +193,8 @@
                 footer: ''
             });
 
-            alert.classList.add("alertWarning");
-            alert.innerHTML = `<span>${responseJson.message}</span>`;
+            alerta.classList.add("alertWarning");
+            alerta.innerHTML = `<span>${responseJson.message}</span>`;
 
         }
 
@@ -210,12 +210,14 @@
 
 
 
+
     const validar = async() => {
 
         let resValidation = true;
 
-        alert.classList.remove("alertWarning");
-        alert.classList.remove("alertError");
+        alerta.classList.remove("alertWarning");
+        alerta.classList.remove("alertError");
+        alerta.innerHTML = "";
 
         const inputsForm = document.querySelectorAll("#formRegister .inp");
 
@@ -225,8 +227,8 @@
 
             if (input.value.trim() === "") {
 
-                alert.classList.add("alertError");
-                alert.innerHTML = `<span> Porfavor completa todos los campos </span>`;
+                alerta.classList.add("alertError");
+                alerta.innerHTML = `<span> Porfavor completa todos los campos </span>`;
 
                 resValidation = false;
                 

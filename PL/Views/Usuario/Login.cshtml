@@ -4,3 +4,443 @@
 }
 
 
+
+
+<div class="containerMainL">
+
+
+    <div class="containerFormL">
+        <div class="containerForm__loginL">
+            <img src="https://brandia.com.mx/wp-content/uploads/2014/10/laudex_1-1160x700.jpg" alt="laudex"><br>
+            <h2 class="titleL">Welcome</h2>
+            <br>
+            <div class="alert"></div>
+            <form action="#" id="formSignIn">
+                <div class="containerInputL">
+                    <input type="text" class="inp" id="Email" name="Email" autocomplete="off">
+                    <label for="">UserName</label>
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <br>
+                <br>
+                <div class="containerInputL">
+                    <input type="password" class="inp" id="Pass" name="Pass" autocomplete="off">
+                    <label for="">Password</label>
+                    <i class="fa-solid fa-unlock-keyhole"></i>
+                </div>
+                <br>
+                <input type="submit" class="btnSubmitL" value="Sign in">
+            </form>
+            <a href="" class="link">Forgot password?</a>
+            <br>
+            <a href="" class="link2">¿Aun no tienes una cuenta? Registrate aqui!</a>
+            <br>
+            <div class="containerSocialL">
+                <a target="_blank" href="https://laudex.mx/?utm_source=google&utm_medium=cpc&utm_campaign=tholus_mar_ago22&adgroupid=126641209598&device=c&feeditemid=&loc_physical_ms=9047092&devicemodel=&adposition=&gad_source=1&gclid=Cj0KCQiAh8OtBhCQARIsAIkWb69AFUdsDRafU4y5CYk5PV70sBizHxx2staUA-wwGO8wBxnRVwMPKxQaAtpjEALw_wcB"><i class="fa-solid fa-globe"></i></a>
+                <a target="_blank" href="https://www.youtube.com/channel/UCX4IwbLJnI5BhUqHIr3emGw"><i class="fa-brands fa-youtube"></i></a>
+                <a target="_blank" href="https://www.facebook.com/Laudex/?locale=es_LA"><i class="fa-brands fa-facebook"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="containerInfoL">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Non officiis amet dicta optio fuga ea exercitationem pariatur delectus adipisci rem hic vitae molestiae corporis autem, aspernatur harum earum, aliquam magni aperiam, velit tempora nulla nam placeat sed? Voluptatibus quisquam maxime nostrum omnis eveniet quaerat temporibus error alias quas a! Impedit placeat temporibus quasi, voluptas voluptate labore eos veritatis! Expedita illum explicabo perferendis facilis, sequi rerum, saepe debitis ipsa eveniet ex odio nemo, hic ullam veniam iste earum molestias. Est dicta perferendis tempore maiores vero labore sunt quo id. Non facilis sint recusandae voluptatum suscipit aperiam autem id. Nesciunt, quos ullam.</p>
+    </div>
+
+
+</div>
+
+<script src="https://kit.fontawesome.com/da829a2c90.js" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+
+    const inputs = document.querySelectorAll(".inp");
+
+    const alerta = document.querySelector(".alert");
+
+
+    inputs.forEach(input => {
+        input.addEventListener("focus", () => {
+            input.classList.add("focus");
+        })
+
+        input.addEventListener("blur", () => {
+            if (input.value.trim() == "") {
+                input.value = "";
+                input.classList.remove("focus");
+            }
+        })
+    });
+
+
+
+
+
+    const formSignIn = document.getElementById("formSignIn");
+
+    formSignIn.addEventListener("submit", async (e) => {
+
+        e.preventDefault();
+
+        const resValidacion = await validar();
+
+        if (resValidacion) {
+
+            const resSignIn = await signIn();
+
+            if (resSignIn.correct) {
+                location.href = '@Url.Action("Login")';
+            }
+
+        }
+
+
+    })
+
+
+
+
+    const signIn = async() => {
+
+        const Email = document.getElementById("Email");
+        const Pass = document.getElementById("Pass");
+
+
+        var Usuario = {
+            idUsuario: 0,
+            nombre: "",
+            apellidoP: "",
+            apellidoM: "",
+            userName: "",
+            email: Email.value.trim(),
+            pass: Pass.value.trim(),
+        }
+
+
+        const responseSignIn = await fetch("http://localhost:5054/api/Usuario/GetById", {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(Usuario)
+        })
+
+        const responseJson = {correct: false};
+
+
+        if (responseSignIn.status === 200){
+
+            const responseJson = await responseRegister.json();
+
+            if (responseJson.correct) {
+
+
+                localStorage.setItem("acount", JSON.stringify(responseJson.object));
+
+                formRegister.reset();
+
+            } else {
+                alerta.classList.add("alertWarning");
+                alerta.innerHTML = `<span>${responseJson.message}</span>`;
+            }
+
+
+        }
+
+            return responseJson;
+    }
+
+
+
+
+    const validar = async () => {
+
+        let resValidation = true;
+
+        alerta.classList.remove("alertWarning");
+        alerta.classList.remove("alertError");
+        alerta.innerHTML = "";
+
+        const inputsForm = document.querySelectorAll("#formSignIn .inp");
+
+
+        inputsForm.forEach(input => {
+
+
+            if (input.value.trim() === "") {
+
+                alerta.classList.add("alertError");
+                alerta.innerHTML = `<span> Porfavor completa todos los campos </span>`;
+
+                resValidation = false;
+
+            }
+
+
+
+            // switch (input.name){
+
+
+
+            // }
+
+        })
+
+
+        return resValidation;
+
+
+
+    }
+
+
+
+
+
+</script>
+
+
+
+<style>
+
+  
+
+@@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
+
+
+
+.containerMainL {
+        padding: 100px 0 0 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        font-family: 'Lato', sans-serif;
+        position: sticky;
+        top: 0;
+        left: 0;
+        overflow-y: auto;
+}
+
+
+.containerFormL{
+    width: 100%;
+    padding: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.titleL{
+    letter-spacing: 1px;
+    margin: 15px 0;
+}
+
+
+
+.containerFormL *{
+    box-sizing: border-box;
+   display: flex;
+   align-items: center;
+}
+
+.containerForm__loginL{
+    width: 400px;
+    min-width: 350px;
+    border: 1px solid #c4cacb65;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    flex-direction: column;
+    color: aliceblue;
+    padding: 50px 30px 20px;
+    position: relative;
+    background-color: #0e124f53;
+    backdrop-filter: blur(5px);
+    box-shadow: 10px 8px 19px #a0ccb765;
+    border-top-left-radius: 55px;
+    border-bottom-right-radius: 55px;
+}
+
+.containerForm__loginL img{
+    position: absolute;
+    top: -40px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0px 0px 15px #a0ccb765;
+}
+
+.containerForm__loginL form{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+}
+
+.containerInputL{
+    width: 100%;
+    position: relative;
+    height: 50px;
+    margin: 5px 0;
+    
+}
+
+.containerInputL label{
+    position: absolute;
+    top: 14px;
+    left: 45px;
+    color: rgba(240, 248, 255, 0.618);
+    pointer-events: none;
+    transition: .1s;
+}
+
+.containerInputL i{
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: 20px;
+    color: rgba(240, 248, 255, 0.326);
+}
+
+.containerInputL input{
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    border: 1px solid #32716073;
+    padding: 15px 50px 0 50px;
+    background-color: #5c5f6036;
+    color: #eee;
+    outline: none;
+    font-size: 17px;
+}
+
+
+.containerInputL input:focus{
+    border: 1px solid rgba(7, 196, 76, 0.395)
+    
+}
+
+
+.containerInputL .inp:focus{
+    animation: focus .1s;
+}
+
+.containerInputL .focus + label{
+    font-size: 13px;
+    top: 5px;
+    font-weight: 600;
+}
+
+.btnSubmitL{
+    width: 95%;
+    position: relative;
+    height: 45px;
+    margin: 5px 0;
+    background-color: rgb(7, 170, 67);
+    border-radius: 19px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    transition: .21s;
+}
+
+.btnSubmitL:hover{
+    background-color: rgb(7, 196, 76);
+    width: 100%;
+}
+
+
+
+.containerInfoL{
+    width: 80%;
+    color: aliceblue;
+    padding: 10px 0 50px 0;
+}
+
+.link, .link2{
+    text-decoration: none;
+    color: rgb(176, 187, 251);
+    font-weight: 900;
+}
+
+.link:hover{
+    /* color: rgb(127, 186, 250); */
+    color: rgb(127, 250, 229);
+}
+
+.link2:hover{
+    color: rgb(127, 250, 229);
+}
+
+.containerSocialL{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+
+.containerSocialL a{
+    color: aliceblue;
+    font-size: 20px;
+    border: 1px solid aliceblue;
+    padding: 10px;
+    border-radius: 50%;
+   transition: .2s;
+}
+
+
+.containerSocialL a:hover{
+    box-shadow: 0px 0px 10px #005a2fba;
+    color: #058034;
+    background-color: #d6f8e1e9;
+}
+
+
+@@keyframes focus {
+    0%{
+        scale: 1;
+    }
+    50%{
+        scale: 1.02;
+    }
+    100%{
+        scale: 1;
+    }
+
+}
+
+
+@@media (min-width: 1050px){
+    .containerMainL{
+        padding: 0;
+        flex-direction: row;
+        height: 100vh;
+    }
+    .containerFormL{
+        width: 40%;
+        padding: 30px;
+    }
+    .containerInfoL{
+        width: 60%;
+        padding: 50px;
+        font-size: 20px;
+    }
+}
+
+
+</style>
+
+
+

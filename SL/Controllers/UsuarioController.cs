@@ -31,5 +31,22 @@ namespace SL.Controllers
 
 
 
+        [HttpPost("GetById")]
+        public IActionResult GetById([FromBody] ML.Usuario usuario)
+        {
+            ML.Result result = BL.Usuario.GetById(usuario);
+
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
+
+
+
     }
 }

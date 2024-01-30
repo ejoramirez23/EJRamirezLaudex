@@ -54,5 +54,105 @@ namespace BL
 
         }
 
+
+
+
+
+        public static ML.Result GetById(ML.Usuario usuario)
+        {
+
+
+            ML.Result result = new ML.Result();
+
+
+            try
+            {
+
+
+                using (DL.EjramirezLaudexContext context = new DL.EjramirezLaudexContext())
+                {
+
+                    var query = context.Usuarios.FromSqlRaw($"GetById '{usuario.Email}'");
+
+
+                    if (query.ToList().Count() > 0)
+                    {
+
+                        var row = query.ToList()[0];
+                        
+                        if(row.Pass == usuario.Pass)
+                        {
+
+                            result.Object = new object();
+
+                            ML.Usuario User = new ML.Usuario();
+
+                            User.IdUsuario = row.IdUsuario;
+                            User.Nombre = row.Nombre;
+                            User.ApellidoP = row.ApellidoP;
+                            User.ApellidoM = row.ApellidoM; 
+                            User.UserName = row.UserName;   
+                            User.Email = row.Email;
+
+                            result.Object = User;
+
+                            result.Correct = true;
+
+                        }
+                        else
+                        {
+
+                            result.Correct = false;
+                            result.Message = "Contraseña invalida, porfavor verifica";
+
+                        }
+
+
+                    }
+                    else
+                    {
+                        result.Correct = false;
+                        result.Message = "El usuario no fue encontrado, porfavor registrate primero";
+                    }
+
+
+                        
+                }
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.Ex = ex;
+                result.Message = result.Ex.Message;
+            }
+
+
+            return result;
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
