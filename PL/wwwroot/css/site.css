@@ -23,6 +23,8 @@ body {
 }
 
 
+
+
 body {
     /*  background-color: #031e28; */
     background-image: url("https://static.wixstatic.com/media/eed407_3b5f678d46ff495ab708929cfa1c994e~mv2.jpeg/v1/fill/w_640,h_426,al_c,lg_1,q_80,enc_auto/eed407_3b5f678d46ff495ab708929cfa1c994e~mv2.jpeg");
@@ -37,13 +39,65 @@ body {
     padding: 0;
 }
 
-.container{
-    margin:0;
-    padding:0;
+.logoLaudexHeader {
+    width: 150px;
+    height: 50px;
+    gap: 10px;
+}
+
+
+
+
+.containerUserLogin{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+}
+
+
+.containerUserLogin p{
+    margin: 0 10px;
+}
+
+
+    .containerUserLogin span {
+        cursor: pointer;
+        border: 1px solid #005a2fba;
+        padding: 10px;
+        border-radius: 5px;
+        transition: .1s;
+    }
+
+
+        .containerUserLogin span:hover {
+            background-color: #017f421c;
+        }
+
+
+
+.itemLink:hover {
+    transition: .2s;
+}
+
+
+.itemLink:hover {
+    background-color: rgba(7, 196, 76, 0.141);
+}
+
+.aLinkHeader {
+    border-bottom: 3px solid rgb(7, 170, 67);
+}
+
+
+
+.container {
+    margin: 0;
+    padding: 0;
 }
 
 .containerMain {
-    padding: 100px 0 0 0;
+    padding: 160px 0 0 0;
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -84,6 +138,11 @@ body {
 }
 
 
+.visibleHidden{
+    display: none;
+}
+
+
 .containerForm {
     width: 100%;
     padding: 80px;
@@ -95,7 +154,7 @@ body {
 
 .title {
     letter-spacing: 1px;
-    margin: 15px 0;
+    margin: 15px 0 5px 0;
 }
 
 
@@ -290,7 +349,7 @@ body {
     .containerMain {
         flex-direction: row;
         height: 100vh;
-        padding: 0;
+        padding: 40px;
     }
 
     .containerForm {

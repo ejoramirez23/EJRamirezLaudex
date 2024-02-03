@@ -1,0 +1,680 @@
+﻿@{
+    ViewData["Title"] = "Task";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="containerMain">
+
+    <div class="containersearch2">
+        <div class="containerSelector">
+            <input type="radio" class="selector" id="selector1" name="selector" checked>
+            <label for="selector1"><i class="fa-solid fa-magnifying-glass iconInp"></i></label>
+            <input type="radio" class="selector" id="selector2" name="selector">
+            <label for="selector2"> <i class="fa-solid fa-calendar-days iconInp"></i></label>
+        </div>
+
+        <div class="containerHeaderInputs" id="containerHeaderInputs">
+            <div class="containerInputT" id="inpSearch">
+                <input type="text" class="inp" autocomplete="off">
+                <label for="">Search</label>
+                <i class="fa-solid fa-magnifying-glass iconInp"></i>
+            </div>
+            <div class="containerInputT" id="inpDate">
+                <input type="text" class="inp" autocomplete="off">
+                <label for="">Expiration date</label>
+                <i class="fa-solid fa-calendar-days iconInp"></i>
+            </div>
+
+        </div>
+    </div>
+
+    <br><br>
+
+    <div class="containersearch">
+
+        <div class="containerTitleAndDate">
+
+            <div class="containerInputT">
+                <input type="text" class="inp" autocomplete="off">
+                <label for="">Task title</label>
+                <i class="fa-solid fa-list-check iconInp"></i>
+            </div>
+            <div class="containerInputT">
+                <input type="text" class="inp" autocomplete="off">
+                <label for="">Expiration date</label>
+                <i class="fa-solid fa-calendar-days iconInp"></i>
+            </div>
+
+        </div>
+
+        <div class="containerInputT">
+            <input type="text" class="inp" autocomplete="off">
+            <label for="">Description</label>
+            <i class="fa-regular fa-comment-dots iconInp"></i>
+            <button><i class="fa-solid fa-plus"></i></button>
+        </div>
+
+        <div class="containerTask">
+
+            <div class="containerIconListEmpty">
+                <i class="fa-solid fa-rectangle-list"></i>
+            </div>
+
+            <!-- <div class="task">
+                <input type="checkbox">
+                <p>Esta es la primer tarea</p>
+                <div class="task__containerActions">
+                    <i class="fa-solid fa-pencil"></i>
+                    <i class="fa-solid fa-trash-can"></i>
+                </div>
+            </div>
+            <div class="task">
+                <input type="checkbox">
+                <p>Esta es la primer tarea</p>
+                <div class="task__containerActions">
+                    <i class="fa-solid fa-pencil"></i>
+                    <i class="fa-solid fa-trash-can"></i>
+                </div>
+            </div>
+            <div class="task">
+                <input type="checkbox">
+                <p>Esta es la primer tarea</p>
+                <div class="task__containerActions">
+                    <i class="fa-solid fa-pencil"></i>
+                    <i class="fa-solid fa-trash-can"></i>
+                </div>
+            </div>
+            <div class="task">
+                <input type="checkbox">
+                <p>Esta es la primeeffdfsd fds fdsf dsf sd fdsfsdf sdf  fsdf fds fds fdsf ds  fsd fdsf dsf sdf sdfsdfds fsdf dsf sdfs df sdr tarea</p>
+                <div class="task__containerActions">
+                    <i class="fa-solid fa-pencil"></i>
+                    <i class="fa-solid fa-trash-can"></i>
+                </div>
+            </div> -->
+
+
+
+        </div>
+
+    </div>
+
+
+
+
+
+</div>
+
+<script src="https://kit.fontawesome.com/da829a2c90.js" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+
+    // await validarSession();
+
+    const inputs = document.querySelectorAll(".inp");
+
+    inputs.forEach(input => {
+        input.addEventListener("focus", () => {
+            input.classList.add("focus");
+        })
+
+        input.addEventListener("blur", () => {
+            if (input.value.trim() == "") {
+                input.value = "";
+                input.classList.remove("focus");
+            }
+        })
+    });
+
+
+
+    const selector1 = document.getElementById("selector1");
+    const selector2 = document.getElementById("selector2");
+    const inpSearch = document.getElementById("inpSearch");
+    const inpDate = document.getElementById("inpDate");
+
+    selector1.addEventListener("click", typeSearch);
+    // selector1.click();
+    selector2.addEventListener("click", typeSearch);
+
+    const containerHeaderInputs = document.getElementById("containerHeaderInputs");
+
+    function typeSearch() {
+        if (selector1.checked == true) {
+            inpSearch.classList.add("inpActive");
+            inpDate.classList.remove("inpActive");
+
+
+        } else {
+            inpDate.classList.add("inpActive");
+            inpSearch.classList.remove("inpActive");
+
+
+        }
+    }
+
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        typeSearch();
+    })
+
+
+
+
+    async function validarSession() {
+
+
+        if (localStorage.getItem("account") === null) {
+
+
+            location.href = '@Url.Action("Login")';
+
+        }
+
+    }
+
+
+
+
+
+</script>
+
+
+<style>
+
+    @@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
+
+    body {
+        /*  background-color: #031e28; */
+        background-image: url("https://static.wixstatic.com/media/eed407_3b5f678d46ff495ab708929cfa1c994e~mv2.jpeg/v1/fill/w_640,h_426,al_c,lg_1,q_80,enc_auto/eed407_3b5f678d46ff495ab708929cfa1c994e~mv2.jpeg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background: rgb(3,30,40);
+        background: linear-gradient(90deg, rgba(3, 30, 40, 0.785) 0%, rgba(3, 30, 40, 0.9) 43%, rgb(3, 80, 95) 100%);
+    }
+
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+
+
+    .containerMain {
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        font-family: 'Lato', sans-serif;
+        position: sticky;
+        top: 0;
+        left: 0;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+
+
+
+    .containersearch {
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        background-color: #adaeae30;
+        padding: 20px;
+        margin: 15px;
+    }
+
+
+    .containersearch2 {
+        width: 80%;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        background-color: #adaeae30;
+        padding: 10px 25px;
+        margin: 15px;
+    }
+
+        .containersearch2 .containerInputT {
+            height: 60px;
+        }
+
+            .containersearch2 .containerInputT label {
+                top: 20px;
+            }
+
+            .containersearch2 .containerInputT .iconInp {
+                top: 21px;
+            }
+
+    .containerHeaderInputs {
+        width: 95%;
+        display: flex;
+        gap: 10px;
+    }
+
+        .containerHeaderInputs .containerInputT {
+            display: none;
+        }
+
+        .containerHeaderInputs .inpActive {
+            display: block;
+        }
+
+
+    .containerInput {
+        width: 100%;
+        position: relative;
+        height: 50px;
+        margin: 5px 0;
+        border-radius: 9px;
+    }
+
+
+
+    .containerSelector {
+        display: flex;
+        flex-direction: column;
+    }
+
+
+        .containerSelector input {
+            display: none;
+        }
+
+        .containerSelector label {
+            padding: 10px;
+            border: 1px solid #00ffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 35px;
+            height: 35px;
+            transition: .2s;
+            border: 1px solid #00f1b139;
+            background-color: #56caa120;
+            color: #00ffff;
+            cursor: pointer;
+        }
+
+
+        .containerSelector input:checked + label {
+            background-color: #00ffff4d;
+        }
+
+
+
+
+
+
+
+
+    .title {
+        letter-spacing: 1px;
+        margin: 15px 0;
+    }
+
+
+
+
+    .containerInput label {
+        position: absolute;
+        top: 14px;
+        left: 45px;
+        color: rgba(240, 248, 255, 0.618);
+        pointer-events: none;
+        transition: .1s;
+    }
+
+    .containerInput .iconInp {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        font-size: 20px;
+        color: rgba(240, 248, 255, 0.326);
+    }
+
+    .containerInput input {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        border: 1px solid #32716073;
+        padding: 15px 50px 0 50px;
+        background-color: #5c5f6036;
+        color: #eee;
+        outline: none;
+        font-size: 17px;
+    }
+
+
+        .containerInput input:focus {
+            border: 1px solid rgba(7, 196, 76, 0.395)
+        }
+
+
+    .containerInput .inp:focus {
+        animation: focus .1s;
+    }
+
+    .containerInput .focus + label {
+        font-size: 13px;
+        top: 5px;
+        font-weight: 600;
+    }
+
+
+
+    .containerTitleAndDate {
+        display: flex;
+        gap: 15px;
+    }
+
+
+
+
+
+    .containerInputT {
+        width: 100%;
+        position: relative;
+        height: 50px;
+        margin: 5px 0;
+        border-radius: 9px;
+        display: flex;
+        gap: 15px;
+    }
+
+        .containerInputT button {
+            width: 80px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: 1px solid #32716073;
+            background-color: #56caa144;
+            color: #00ffff;
+            transition: .2s;
+        }
+
+            .containerInputT button:hover {
+                background-color: #56caa17c;
+            }
+
+
+            .containerInputT button:active {
+                animation: focus .1s;
+            }
+
+        .containerInputT label {
+            position: absolute;
+            top: 14px;
+            left: 45px;
+            color: rgba(240, 248, 255, 0.618);
+            pointer-events: none;
+            transition: .1s;
+        }
+
+        .containerInputT .iconInp {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 20px;
+            color: rgba(240, 248, 255, 0.326);
+        }
+
+
+
+
+        .containerInputT input {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            border: 1px solid #32716073;
+            padding: 15px 50px 0 50px;
+            background-color: #5c5f6036;
+            color: #eee;
+            outline: none;
+            font-size: 17px;
+        }
+
+
+            .containerInputT input:focus {
+                border: 1px solid rgba(7, 196, 76, 0.395)
+            }
+
+
+        .containerInputT .inp:focus {
+            animation: focus .1s;
+        }
+
+        .containerInputT .focus + label {
+            font-size: 13px;
+            top: 5px;
+            font-weight: 600;
+        }
+
+
+
+
+        .containerInputT label {
+            position: absolute;
+            top: 14px;
+            left: 45px;
+            color: rgba(240, 248, 255, 0.618);
+            pointer-events: none;
+            transition: .1s;
+        }
+
+
+        .containerInputT input {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            border: 1px solid #32716073;
+            padding: 15px 50px 0 50px;
+            background-color: #5c5f6036;
+            color: #eee;
+            outline: none;
+            font-size: 17px;
+        }
+
+
+            .containerInputT input:focus {
+                border: 1px solid rgba(7, 196, 76, 0.395)
+            }
+
+
+        .containerInputT .inp:focus {
+            animation: focus .1s;
+        }
+
+        .containerInputT .focus + label {
+            font-size: 13px;
+            top: 5px;
+            font-weight: 600;
+        }
+
+
+
+    .containerIconListEmpty {
+        width: 100%;
+        font-size: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .containerIconListEmpty i {
+            color: #00ffff08;
+        }
+
+
+
+
+
+    .containerTask {
+        padding: 5px;
+        border-radius: 9px;
+        margin: 20px 0;
+    }
+
+        .containerTask .task {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            color: aliceblue;
+            padding: 20px;
+            border-radius: 9px;
+            margin: 10px 0;
+            border: 1px solid #eeeeee65;
+        }
+
+            .containerTask .task:hover {
+                transform: translateY(-2px);
+                background-color: #00ffff09;
+            }
+
+            .containerTask .task p {
+                padding: 0 15px;
+            }
+
+    .task__containerActions {
+        display: flex;
+        gap: 15px;
+        font-size: 19px;
+    }
+
+        .task__containerActions i {
+            color: aliceblue;
+        }
+
+            .task__containerActions i:hover {
+                color: #56caa1;
+                transition: .2s;
+                cursor: pointer;
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .btnSubmit {
+        width: 95%;
+        position: relative;
+        height: 45px;
+        margin: 5px 0;
+        background-color: rgb(7, 170, 67);
+        border-radius: 19px;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        transition: .21s;
+    }
+
+        .btnSubmit:hover {
+            background-color: rgb(7, 196, 76);
+            width: 100%;
+        }
+
+
+
+    .containerInfo {
+        width: 80%;
+        color: aliceblue;
+        padding: 10px 0 50px 0;
+    }
+
+    .link, .link2 {
+        text-decoration: none;
+        color: rgb(176, 187, 251);
+        font-weight: 900;
+    }
+
+        .link:hover {
+            /* color: rgb(127, 186, 250); */
+            color: rgb(127, 250, 229);
+        }
+
+        .link2:hover {
+            color: rgb(127, 250, 229);
+        }
+
+    .containerSocial {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        justify-content: center;
+        margin: 15px 0;
+    }
+
+
+        .containerSocial a {
+            color: aliceblue;
+            font-size: 20px;
+            border: 1px solid aliceblue;
+            padding: 10px;
+            border-radius: 50%;
+            transition: .2s;
+        }
+
+
+            .containerSocial a:hover {
+                box-shadow: 0px 0px 10px #005a2fba;
+                color: #058034;
+                background-color: #d6f8e1e9;
+            }
+
+
+    @@keyframes focus {
+        0% {
+            scale: 1;
+        }
+
+        50% {
+            scale: 1.02;
+        }
+
+        100% {
+            scale: 1;
+        }
+    }
+
+
+
+
+    @@media (min-width: 1050px) {
+
+        .containersearch {
+            width: 600px;
+        }
+
+        .containersearch2 {
+            width: 600px;
+        }
+    }
+
+</style>
