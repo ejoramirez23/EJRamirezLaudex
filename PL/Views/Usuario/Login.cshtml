@@ -53,6 +53,25 @@
 <script type="text/javascript">
 
 
+    document.addEventListener("DOMContentLoaded", async () => {
+        await validarSession();
+    })
+
+
+
+    const validarSession = () => {
+
+
+        if (localStorage.getItem("account") !== null) {
+
+
+            location.href = '@Url.Action("Task")';
+
+        }
+
+    }
+
+
     const inputs = document.querySelectorAll(".inp");
 
     const alerta = document.querySelector(".alert");
@@ -192,6 +211,12 @@
 
 
     }
+
+
+
+
+
+
 
 
 

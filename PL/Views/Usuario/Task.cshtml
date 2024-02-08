@@ -5,7 +5,7 @@
 
 
 
-<div class="containerMain">
+<div class="containerMainT">
 
     <div class="containersearch2">
         <div class="containerSelector">
@@ -34,35 +34,46 @@
 
     <div class="containersearch">
 
+        <form id="formTask">
+
         <div class="containerTitleAndDate">
 
             <div class="containerInputT">
-                <input type="text" class="inp" autocomplete="off">
+                <input type="text" class="inp" id="TaskName" name="TaskName" autocomplete="off">
                 <label for="">Task title</label>
                 <i class="fa-solid fa-list-check iconInp"></i>
             </div>
-            <div class="containerInputT">
-                <input type="text" class="inp" autocomplete="off">
+            <div class="containerInputTf">
+                <input type="text" id="FechaVencimiento" name="FechaVencimiento" autocomplete="off">
                 <label for="">Expiration date</label>
+                <i class="fa-solid fa-calendar-days iconInp"></i>
+            </div>
+            <div class="containerInputT">
+                <select type="text" class="inp focus" id="Prioridad" name="Prioridad" autocomplete="off">
+                    <option value="0">Select an option</option>
+                <select/>
+                <label for="">Prioridad</label>
                 <i class="fa-solid fa-calendar-days iconInp"></i>
             </div>
 
         </div>
 
         <div class="containerInputT">
-            <input type="text" class="inp" autocomplete="off">
+            <input type="text" class="inp" id="Descripcion" name="Descripcion" autocomplete="off">
             <label for="">Description</label>
             <i class="fa-regular fa-comment-dots iconInp"></i>
-            <button><i class="fa-solid fa-plus"></i></button>
+            <button type="submit"><i class="fa-solid fa-plus"></i></button>
         </div>
+        
+        </form>
 
         <div class="containerTask">
 
-            <div class="containerIconListEmpty">
+            @* <div class="containerIconListEmpty">
                 <i class="fa-solid fa-rectangle-list"></i>
-            </div>
+            </div> *@
 
-            <!-- <div class="task">
+            <div class="task">
                 <input type="checkbox">
                 <p>Esta es la primer tarea</p>
                 <div class="task__containerActions">
@@ -70,6 +81,8 @@
                     <i class="fa-solid fa-trash-can"></i>
                 </div>
             </div>
+
+            
             <div class="task">
                 <input type="checkbox">
                 <p>Esta es la primer tarea</p>
@@ -93,7 +106,7 @@
                     <i class="fa-solid fa-pencil"></i>
                     <i class="fa-solid fa-trash-can"></i>
                 </div>
-            </div> -->
+            </div> 
 
 
 
@@ -109,10 +122,30 @@
 
 <script src="https://kit.fontawesome.com/da829a2c90.js" crossorigin="anonymous"></script>
 
+
+@section scripts{
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#FechaVencimiento").datepicker({
+                dateFormat: 'dd/mm/yy',
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '1910:2023',
+                maxDate: new Date()
+            });
+        });
+
+      
+    </script>
+
+    }
+
+
 <script type="text/javascript">
 
 
-    // await validarSession();
 
     const inputs = document.querySelectorAll(".inp");
 
@@ -137,7 +170,6 @@
     const inpDate = document.getElementById("inpDate");
 
     selector1.addEventListener("click", typeSearch);
-    // selector1.click();
     selector2.addEventListener("click", typeSearch);
 
     const containerHeaderInputs = document.getElementById("containerHeaderInputs");
@@ -158,14 +190,197 @@
 
 
 
-    document.addEventListener("DOMContentLoaded", () => {
-        typeSearch();
+    document.addEventListener("DOMContentLoaded", async() => {
+        await validarSession();
+        await typeSearch();
+        await PrioridadGetAll();
     })
 
 
+    const Prioridad = document.getElementById("Prioridad");
 
 
-    async function validarSession() {
+    const PrioridadGetAll = async() => {
+
+
+        const responsePrioridades = await fetch("http://localhost:5054/api/Prioridad/GetAll", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }) 
+
+
+
+        if(responsePrioridades.status == 200){
+
+            const resJsonPrioridades = await responsePrioridades.json();
+
+            const fgOptionPrioridad = document.createDocumentFragment();
+
+
+            resJsonPrioridades.objects.forEach((prioridad) => {
+                const op = document.createElement("option")
+
+                op.setAttribute("value", prioridad.idPrioridad);
+                op.innerText = prioridad.prioridadName;
+                fgOptionPrioridad.appendChild(op);
+            })
+
+            Prioridad.appendChild(fgOptionPrioridad);
+            
+
+        }
+
+    }
+
+
+    const formTask = document.getElementById("formTask");
+
+    formTask.addEventListener("submit", async(e) => {
+
+        e.preventDefault();
+
+        let resValidacion = await validarTaskAdd();
+
+        if (resValidacion){
+
+            await taskAdd();
+        
+        }else{
+
+            alert("Porfavor complete todos los campos para agregar una nueva tarea")
+
+        }
+
+    });
+
+
+    const TaskName = document.getElementById("TaskName");
+    const FechaVencimiento = document.getElementById("FechaVencimiento");
+    const PrioridadTxt = document.getElementById("Prioridad");
+    const Descripcion = document.getElementById("Descripcion");
+
+
+
+    const validarTaskAdd = () => {
+
+        let resultValidation = false;
+
+        const camposTask = {
+            campoTaskName : false,
+            campoFechaVencimiento : false,
+            campoPrioridadTxt: false,
+            campoDescripcion : false
+        }
+
+
+
+        if (TaskName.value !== "") {
+            camposTask["campoTaskName"] = true;
+        }
+        
+        if (FechaVencimiento.value !== "") {
+            camposTask["campoFechaVencimiento"] = true;
+        }
+        
+        if (PrioridadTxt.value !== 0) {
+            camposTask["campoPrioridadTxt"] = true;
+        }
+
+        if (Descripcion.value !== "") {
+            camposTask["campoDescripcion"] = true;
+        }
+
+
+        if (camposTask.campoTaskName && camposTask.campoFechaVencimiento && camposTask.campoPrioridadTxt && camposTask.campoDescripcion){
+            resultValidation = true;
+        }
+
+        return resultValidation;
+
+    } 
+
+
+    const taskAdd = async() => {
+
+
+        const task = {
+            "idTask": 0,
+            "taskName": TaskName.value,
+            "descripcion": Descripcion.value,
+            "fechaCreacion": FechaVencimiento.value,
+            "fechaVencimiento": FechaVencimiento.value,
+            "estatus": {
+                "idEstatus": 1,
+                "estatusName": "string"
+            },
+            "prioridad": {
+                "idPrioridad": PrioridadTxt.value,
+                "prioridadName": "string"
+            }
+        }
+
+
+        const responseAddTask = await fetch("http://localhost:5054/api/Task/add/" + 1, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(task)
+        });
+
+
+        if (responseAddTask.status == 200){
+
+
+            const resJsonAddTask = await responseAddTask.json();
+
+            if (resJsonAddTask.correct) {
+
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: resJsonAddTask.message,
+                    showConfirmButton: false,
+                    timer: 2500
+                });
+
+                formTask.reset();
+
+            } else {
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: resJsonAddTask.message,
+                    footer: ''
+                });
+
+               
+
+            }
+
+
+        }
+
+
+
+
+
+
+
+
+        
+
+    }
+
+
+
+
+    const validarSession = async() => {
 
 
         if (localStorage.getItem("account") === null) {
@@ -205,8 +420,12 @@
     }
 
 
+    option{
+        color: black;
+    }
 
-    .containerMain {
+
+    .containerMainT{
         width: 100vw;
         display: flex;
         align-items: center;
@@ -229,7 +448,7 @@
         flex-direction: column;
         background-color: #adaeae30;
         padding: 20px;
-        margin: 15px;
+        margin: 0;
     }
 
 
@@ -373,10 +592,82 @@
 
 
 
+
+
+
+
     .containerTitleAndDate {
         display: flex;
         gap: 15px;
     }
+
+
+
+
+    .containerInputTf {
+        width: 100%;
+        position: relative;
+        height: 50px;
+        margin: 5px 0;
+        border-radius: 9px;
+        display: flex;
+        gap: 15px;
+    }
+
+
+
+    .containerInputTf label {
+        position: absolute;
+        left: 45px;
+        color: rgba(240, 248, 255, 0.618);
+        pointer-events: none;
+        transition: .1s;
+        font-size: 13px;
+        top: 5px;
+        font-weight: 600;
+    }
+
+    .containerInputTf .iconInp {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        font-size: 20px;
+        color: rgba(240, 248, 255, 0.326);
+    }
+
+
+
+
+    .containerInputTf input {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        border: 1px solid #32716073;
+        padding: 15px 50px 0 50px;
+        background-color: #5c5f6036;
+        color: #eee;
+        outline: none;
+        font-size: 17px;
+    }
+
+
+        .containerInputTf input:focus {
+            border: 1px solid rgba(7, 196, 76, 0.395);
+            animation: focus .1s;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -445,6 +736,24 @@
 
 
             .containerInputT input:focus {
+                border: 1px solid rgba(7, 196, 76, 0.395)
+            }
+            
+            
+        .containerInputT select {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            border: 1px solid #32716073;
+            padding: 15px 50px 0 50px;
+            background-color: #5c5f6036;
+            color: #eee;
+            outline: none;
+            font-size: 17px;
+        }
+
+
+            .containerInputT select:focus {
                 border: 1px solid rgba(7, 196, 76, 0.395)
             }
 
@@ -669,11 +978,11 @@
     @@media (min-width: 1050px) {
 
         .containersearch {
-            width: 600px;
+            width: 800px;
         }
 
         .containersearch2 {
-            width: 600px;
+            width: 800px;
         }
     }
 

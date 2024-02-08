@@ -64,22 +64,6 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script type="text/javascript">
 
-
-        // await validarSession();
-
-
-        async function validarSession() {
-
-
-            if (localStorage.getItem("account") !== null) {
-
-
-                location.href = '@Url.Action("Task")';
-
-            }
-
-        }
-
     
         const logout = document.getElementById("logout");
 
@@ -133,7 +117,7 @@
             let sessionObject = JSON.parse(localStorage.getItem("account"));
 
             linksLogout.classList.add("visibleHidden");
-            nameUserLoged.textContent = `@@${sessionObject.nombre}`;
+            nameUserLoged.textContent = `@@${sessionObject.userName}`;
 
         }
 
