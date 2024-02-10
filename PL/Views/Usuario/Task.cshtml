@@ -17,12 +17,12 @@
 
         <div class="containerHeaderInputs" id="containerHeaderInputs">
             <div class="containerInputT" id="inpSearch">
-                <input type="text" class="inp" autocomplete="off">
+                <input type="text" class="inp" id="txtSearch" autocomplete="off">
                 <label for="">Search</label>
                 <i class="fa-solid fa-magnifying-glass iconInp"></i>
             </div>
             <div class="containerInputT" id="inpDate">
-                <input type="text" class="inp" autocomplete="off">
+                <input type="text" class="inp" id="dtFechaVencimiento" autocomplete="off">
                 <label for="">Expiration date</label>
                 <i class="fa-solid fa-calendar-days iconInp"></i>
             </div>
@@ -36,44 +36,45 @@
 
         <form id="formTask">
 
-        <div class="containerTitleAndDate">
+            <div class="containerTitleAndDate">
 
-            <div class="containerInputT">
-                <input type="text" class="inp" id="TaskName" name="TaskName" autocomplete="off">
-                <label for="">Task title</label>
-                <i class="fa-solid fa-list-check iconInp"></i>
+                <div class="containerInputTf">
+                    <input type="text" class="inp" id="TaskName" name="TaskName" autocomplete="off">
+                    <label for="">Task title</label>
+                    <i class="fa-solid fa-list-check iconInp"></i>
+                </div>
+                <div class="containerInputTf">
+                    <input type="text" id="FechaVencimiento" name="FechaVencimiento" autocomplete="off">
+                    <label for="">Expiration date</label>
+                    <i class="fa-solid fa-calendar-days iconInp"></i>
+                </div>
+                <div class="containerInputT">
+                    <select type="text" class="inp focus" id="Prioridad" name="Prioridad" autocomplete="off">
+                        <option value="0">Select an option</option>
+                        <select />
+                        <label for="">Prioridad</label>
+                        <i class="fa-solid fa-calendar-days iconInp"></i>
+                </div>
+
             </div>
+
             <div class="containerInputTf">
-                <input type="text" id="FechaVencimiento" name="FechaVencimiento" autocomplete="off">
-                <label for="">Expiration date</label>
-                <i class="fa-solid fa-calendar-days iconInp"></i>
-            </div>
-            <div class="containerInputT">
-                <select type="text" class="inp focus" id="Prioridad" name="Prioridad" autocomplete="off">
-                    <option value="0">Select an option</option>
-                <select/>
-                <label for="">Prioridad</label>
-                <i class="fa-solid fa-calendar-days iconInp"></i>
+                <input type="text" class="inp" id="Descripcion" name="Descripcion" autocomplete="off">
+                <label for="">Description</label>
+                <i class="fa-regular fa-comment-dots iconInp"></i>
+                <button type="submit"><i class="fa-solid fa-plus"></i></button>
             </div>
 
-        </div>
-
-        <div class="containerInputT">
-            <input type="text" class="inp" id="Descripcion" name="Descripcion" autocomplete="off">
-            <label for="">Description</label>
-            <i class="fa-regular fa-comment-dots iconInp"></i>
-            <button type="submit"><i class="fa-solid fa-plus"></i></button>
-        </div>
-        
         </form>
 
-        <div class="containerTask">
+        <div class="containerTask" id="containerTask">
+            
+            @* 
+             <div class="containerIconListEmpty">
+            <i class="fa-solid fa-rectangle-list"></i>
+            </div> 
 
-            @* <div class="containerIconListEmpty">
-                <i class="fa-solid fa-rectangle-list"></i>
-            </div> *@
-
-            <div class="task">
+            <div class="task canceled">
                 <input type="checkbox">
                 <p>Esta es la primer tarea</p>
                 <div class="task__containerActions">
@@ -82,8 +83,8 @@
                 </div>
             </div>
 
-            
-            <div class="task">
+
+            <div class="task completed">
                 <input type="checkbox">
                 <p>Esta es la primer tarea</p>
                 <div class="task__containerActions">
@@ -106,8 +107,8 @@
                     <i class="fa-solid fa-pencil"></i>
                     <i class="fa-solid fa-trash-can"></i>
                 </div>
-            </div> 
-
+            </div>
+            *@
 
 
         </div>
@@ -119,6 +120,26 @@
 
 
 </div>
+
+
+
+
+
+<template id="templateTask">
+    <div class="task">
+        <input type="checkbox" id="statusInpTask">
+        <p id="inpTaskName">Esta es la primer tarea</p>
+        <div class="task__containerActions">
+            <i class="fa-solid fa-pencil"></i>
+            <i class="fa-solid fa-trash-can"></i>
+        </div>
+    </div>
+</template>
+
+
+
+
+
 
 <script src="https://kit.fontawesome.com/da829a2c90.js" crossorigin="anonymous"></script>
 
@@ -137,7 +158,7 @@
             });
         });
 
-      
+
     </script>
 
     }
@@ -178,29 +199,121 @@
         if (selector1.checked == true) {
             inpSearch.classList.add("inpActive");
             inpDate.classList.remove("inpActive");
-
+            inpSearch.value = "";
 
         } else {
             inpDate.classList.add("inpActive");
             inpSearch.classList.remove("inpActive");
-
-
+            inpDate.value = "";
         }
     }
 
 
 
-    document.addEventListener("DOMContentLoaded", async() => {
+    document.addEventListener("DOMContentLoaded", async () => {
         await validarSession();
         await typeSearch();
         await PrioridadGetAll();
+        await TaskGetAll();
     })
+
+
+    const templateTask = document.getElementById("templateTask");
+
+    const fgTask = document.createDocumentFragment();
+
+    const containerTask = document.getElementById("containerTask");
+
+
+    const TaskGetAll = async() => {
+
+        let txtSearch = "";
+        let dtFechaVencimiento = document.getElementById("dtFechaVencimiento");
+
+        if (document.getElementById("txtSearch").value.trim() == "") { txtSearch = 0 }
+        if (document.getElementById("dtFechaVencimiento").value.trim() == "") { dtFechaVencimiento = 0 }
+
+
+        let session = JSON.parse(localStorage.getItem("account"));
+
+        let sessionIdUsuario = Number(session.idUsuario);
+
+        let urlTask = "http://localhost:5054/api/Task/getAll/" + sessionIdUsuario + "/" + txtSearch + "/" + dtFechaVencimiento;
+
+
+        const responseTaskGetAll = await fetch(urlTask, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
+
+        const resJsonTaskGetAll = await responseTaskGetAll.json();
+
+        if (responseTaskGetAll.status == 200) {
+
+            if (resJsonTaskGetAll.objects.length > 0){
+
+                resJsonTaskGetAll.objects.forEach((task) => {
+
+
+                    const cloneTpTask = templateTask.content.cloneNode(true);
+
+                    if (task.idEstatus == 1) {
+                        cloneTpTask.querySelector("#statusInpTask").checked;
+                        cloneTpTask.querySelector(".task").classList.add("completed");
+                    }
+
+
+                    if (task.idEstatus == 3) {
+                        cloneTpTask.querySelector(".task").removeChild("input");
+                        cloneTpTask.querySelector(".task").classList.add("canceled");
+                    }
+
+                    cloneTpTask.querySelector("#inpTaskName").innerHTML = task.taskName;
+
+
+                    fgTask.appendChild(cloneTpTask);
+
+
+
+
+                })
+
+
+                containerTask.appendChild(fgTask);
+
+
+
+            }else{
+                containerTask.innerHTML = `
+                <div class="containerIconListEmpty">
+                    <i class="fa-solid fa-rectangle-list"></i>
+                </div>`;
+            }
+
+
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: resJsonTaskGetAll.message,
+                footer: ''
+            });
+        }
+    }
+
+
+
+
 
 
     const Prioridad = document.getElementById("Prioridad");
 
 
-    const PrioridadGetAll = async() => {
+    const PrioridadGetAll = async () => {
 
 
         const responsePrioridades = await fetch("http://localhost:5054/api/Prioridad/GetAll", {
@@ -209,11 +322,11 @@
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }) 
+        })
 
 
 
-        if(responsePrioridades.status == 200){
+        if (responsePrioridades.status == 200) {
 
             const resJsonPrioridades = await responsePrioridades.json();
 
@@ -229,7 +342,7 @@
             })
 
             Prioridad.appendChild(fgOptionPrioridad);
-            
+
 
         }
 
@@ -238,17 +351,17 @@
 
     const formTask = document.getElementById("formTask");
 
-    formTask.addEventListener("submit", async(e) => {
+    formTask.addEventListener("submit", async (e) => {
 
         e.preventDefault();
 
         let resValidacion = await validarTaskAdd();
 
-        if (resValidacion){
+        if (resValidacion) {
 
             await taskAdd();
-        
-        }else{
+
+        } else {
 
             alert("Porfavor complete todos los campos para agregar una nueva tarea")
 
@@ -269,10 +382,10 @@
         let resultValidation = false;
 
         const camposTask = {
-            campoTaskName : false,
-            campoFechaVencimiento : false,
+            campoTaskName: false,
+            campoFechaVencimiento: false,
             campoPrioridadTxt: false,
-            campoDescripcion : false
+            campoDescripcion: false
         }
 
 
@@ -280,12 +393,12 @@
         if (TaskName.value !== "") {
             camposTask["campoTaskName"] = true;
         }
-        
+
         if (FechaVencimiento.value !== "") {
             camposTask["campoFechaVencimiento"] = true;
         }
-        
-        if (PrioridadTxt.value !== 0) {
+
+        if (Number(PrioridadTxt.value) !== 0) {
             camposTask["campoPrioridadTxt"] = true;
         }
 
@@ -294,36 +407,41 @@
         }
 
 
-        if (camposTask.campoTaskName && camposTask.campoFechaVencimiento && camposTask.campoPrioridadTxt && camposTask.campoDescripcion){
+        if (camposTask.campoTaskName && camposTask.campoFechaVencimiento && camposTask.campoPrioridadTxt && camposTask.campoDescripcion) {
             resultValidation = true;
         }
 
         return resultValidation;
 
-    } 
+    }
 
 
-    const taskAdd = async() => {
+    const taskAdd = async () => {
+
+
+        let session = JSON.parse(localStorage.getItem("account"));
+
+        let sessionIdUsuario = Number(session.idUsuario);
 
 
         const task = {
             "idTask": 0,
             "taskName": TaskName.value,
             "descripcion": Descripcion.value,
-            "fechaCreacion": FechaVencimiento.value,
+            "fechaCreacion": "",
             "fechaVencimiento": FechaVencimiento.value,
             "estatus": {
                 "idEstatus": 1,
                 "estatusName": "string"
             },
             "prioridad": {
-                "idPrioridad": PrioridadTxt.value,
+                "idPrioridad": Number(PrioridadTxt.value),
                 "prioridadName": "string"
             }
         }
 
 
-        const responseAddTask = await fetch("http://localhost:5054/api/Task/add/" + 1, {
+        const responseAddTask = await fetch("http://localhost:5054/api/Task/add/" + sessionIdUsuario, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -332,11 +450,11 @@
             body: JSON.stringify(task)
         });
 
+        const resJsonAddTask = await responseAddTask.json();
 
-        if (responseAddTask.status == 200){
+        if (responseAddTask.status == 200) {
 
 
-            const resJsonAddTask = await responseAddTask.json();
 
             if (resJsonAddTask.correct) {
 
@@ -359,11 +477,18 @@
                     footer: ''
                 });
 
-               
+
 
             }
 
 
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: resJsonAddTask.message,
+                footer: ''
+            });
         }
 
 
@@ -373,14 +498,14 @@
 
 
 
-        
+
 
     }
 
 
 
 
-    const validarSession = async() => {
+    const validarSession = async () => {
 
 
         if (localStorage.getItem("account") === null) {
@@ -420,12 +545,12 @@
     }
 
 
-    option{
+    option {
         color: black;
     }
 
 
-    .containerMainT{
+    .containerMainT {
         width: 100vw;
         display: flex;
         align-items: center;
@@ -616,47 +741,79 @@
 
 
 
-    .containerInputTf label {
-        position: absolute;
-        left: 45px;
-        color: rgba(240, 248, 255, 0.618);
-        pointer-events: none;
-        transition: .1s;
-        font-size: 13px;
-        top: 5px;
-        font-weight: 600;
-    }
+        .containerInputTf label {
+            position: absolute;
+            left: 45px;
+            color: rgba(240, 248, 255, 0.618);
+            pointer-events: none;
+            transition: .1s;
+            font-size: 13px;
+            top: 5px;
+            font-weight: 600;
+        }
 
-    .containerInputTf .iconInp {
-        position: absolute;
-        top: 15px;
-        left: 15px;
-        font-size: 20px;
-        color: rgba(240, 248, 255, 0.326);
-    }
-
-
-
-
-    .containerInputTf input {
-        width: 100%;
-        height: 100%;
-        border-radius: 5px;
-        border: 1px solid #32716073;
-        padding: 15px 50px 0 50px;
-        background-color: #5c5f6036;
-        color: #eee;
-        outline: none;
-        font-size: 17px;
-    }
-
-
-        .containerInputTf input:focus {
-            border: 1px solid rgba(7, 196, 76, 0.395);
-            animation: focus .1s;
+        .containerInputTf .iconInp {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 20px;
+            color: rgba(240, 248, 255, 0.326);
         }
 
 
+
+
+        .containerInputTf input {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            border: 1px solid #32716073;
+            padding: 15px 50px 0 50px;
+            background-color: #5c5f6036;
+            color: #eee;
+            outline: none;
+            font-size: 17px;
+        }
+
+
+            .containerInputTf input:focus {
+                border: 1px solid rgba(7, 196, 76, 0.395);
+                animation: focus .1s;
+            }
+
+
+
+
+
+
+    .containerInputTf {
+        width: 100%;
+        position: relative;
+        height: 50px;
+        margin: 5px 0;
+        border-radius: 9px;
+        display: flex;
+        gap: 15px;
+    }
+
+        .containerInputTf button {
+            width: 80px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: 1px solid #32716073;
+            background-color: #56caa144;
+            color: #00ffff;
+            transition: .2s;
+        }
+
+            .containerInputTf button:hover {
+                background-color: #56caa17c;
+            }
+
+
+            .containerInputTf button:active {
+                animation: focus .1s;
+            }
 
 
 
@@ -738,8 +895,8 @@
             .containerInputT input:focus {
                 border: 1px solid rgba(7, 196, 76, 0.395)
             }
-            
-            
+
+
         .containerInputT select {
             width: 100%;
             height: 100%;
@@ -848,11 +1005,24 @@
             .containerTask .task:hover {
                 transform: translateY(-2px);
                 background-color: #00ffff09;
+                box-shadow: 1px 3px 5px #eee
             }
 
             .containerTask .task p {
                 padding: 0 15px;
             }
+
+.canceled{
+        border: 1px solid red;
+        background-color: #7f010164;
+}
+
+.completed{
+        border: 1px solid green;
+        background-color: #017f1464;
+}
+
+
 
     .task__containerActions {
         display: flex;

@@ -21,6 +21,8 @@ public partial class EjramirezLaudexContext : DbContext
 
     public virtual DbSet<Task> Tasks { get; set; }
 
+    public virtual DbSet<TaskUser> TaskUsers { get; set; }
+
     public virtual DbSet<UserTask> UserTasks { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
@@ -81,6 +83,21 @@ public partial class EjramirezLaudexContext : DbContext
             entity.HasOne(d => d.IdPrioridadNavigation).WithMany(p => p.Tasks)
                 .HasForeignKey(d => d.IdPrioridad)
                 .HasConstraintName("FK_PrioridadTask");
+        });
+
+        modelBuilder.Entity<TaskUser>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("TaskUser");
+
+            entity.HasOne(d => d.IdTaskNavigation).WithMany()
+                .HasForeignKey(d => d.IdTask)
+                .HasConstraintName("FK_TaskUser_Task");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany()
+                .HasForeignKey(d => d.IdUsuario)
+                .HasConstraintName("FK_TaskUser_User");
         });
 
         modelBuilder.Entity<UserTask>(entity =>

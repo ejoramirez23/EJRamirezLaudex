@@ -20,10 +20,10 @@ namespace BL
             try
             {
 
-                using(DL.EjramirezLaudexContext context = new DL.EjramirezLaudexContext())
+                using (DL.EjramirezLaudexContext context = new DL.EjramirezLaudexContext())
                 {
 
-                    int query = context.Database.ExecuteSqlRaw($"TaskAdd {idUsuario}, '{task.TaskName}', '{task.Descripcion}', '{task.FechaCreacion}', '{task.FechaVencimiento}', {task.Estatus.IdEstatus}, {task.Prioridad.IdPrioridad}");
+                    int query = context.Database.ExecuteSqlRaw($"TaskAdd {idUsuario}, '{task.TaskName}', '{task.Descripcion}', '{task.FechaVencimiento}', {task.Estatus.IdEstatus}, {task.Prioridad.IdPrioridad}");
 
                     if (query > 0)
                     {
@@ -39,17 +39,101 @@ namespace BL
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 result.Correct = false;
                 result.Ex = ex;
-                result.Message = "Ocurrio un error: " + ex.Message;    
+                result.Message = "Ocurrio un error: " + ex.Message;
             }
 
             return result;
 
 
         }
+
+
+
+
+
+        public static ML.Result GetAll(int idUsuario, string txtSearch, string dtFechaVencimiento)
+        {
+
+            ML.Result result = new ML.Result();
+
+            try
+            {
+
+
+                using (DL.EjramirezLaudexContext context = new DL.EjramirezLaudexContext())
+                {
+
+
+                    var query = context.Tasks.FromSqlRaw($"TaskGetAll {idUsuario}, '{txtSearch}', '{dtFechaVencimiento}'");
+
+
+                    if (query.ToList().Count() > 0)
+                    {
+
+
+                        result.Objects = new List<object>();
+
+
+
+                        foreach (var taskEF in query.ToList())
+                        {
+
+                            ML.Task task = new ML.Task();
+
+
+                            task.IdTask = (int)taskEF.IdTask;
+                            task.TaskName = taskEF.TaskName == null ? taskEF.TaskName = "" : (string)taskEF.TaskName;
+                            task.Descripcion = taskEF.Descripcion == null ? "" : (string)taskEF.Descripcion;
+                            task.FechaCreacion = taskEF.FechaVencimiento == null ? "" : taskEF.FechaVencimiento.Value.Date.ToString("dd-MM-yyyy");
+                            task.FechaVencimiento = taskEF.FechaVencimiento == null ? "" : taskEF.FechaVencimiento.Value.Date.ToString("dd-MM-yyyy");
+                            task.Estatus = new ML.Estatus();
+                            task.Estatus.IdEstatus = (int)taskEF.IdEstatus;
+                            task.Prioridad = new ML.Prioridad();
+                            task.Prioridad.IdPrioridad = (int)taskEF.IdPrioridad;
+
+
+                            result.Objects.Add(task);
+
+
+                        }
+
+                        result.Correct = true;
+
+
+                    }
+                    else
+                    {
+                        result.Correct = false;
+                        result.Message = "No se encontraron resultados";
+                    }
+
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.Ex = ex;
+                result.Message = ex.Message;
+            }
+
+            return result;
+
+        }
+
+
+
+
+
+
+
+
+
 
 
 
