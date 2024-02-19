@@ -38,6 +38,8 @@
 
             <div class="containerTitleAndDate">
 
+                <input type="number" class="inp" id="IdTask" name="IdTask" autocomplete="off">
+
                 <div class="containerInputTf">
                     <input type="text" class="inp" id="TaskName" name="TaskName" autocomplete="off">
                     <label for="">Task title</label>
@@ -62,7 +64,7 @@
                 <input type="text" class="inp" id="Descripcion" name="Descripcion" autocomplete="off">
                 <label for="">Description</label>
                 <i class="fa-regular fa-comment-dots iconInp"></i>
-                <button type="submit"><i class="fa-solid fa-plus"></i></button>
+                <button type="submit" id="btnSubmitAddTask"><i class="fa-solid fa-plus"></i></button>
             </div>
 
         </form>
@@ -130,8 +132,10 @@
         <input type="checkbox" id="statusInpTask">
         <p id="inpTaskName">Esta es la primer tarea</p>
         <div class="task__containerActions">
-            <i class="fa-solid fa-pencil"></i>
-            <i class="fa-solid fa-trash-can"></i>
+            <i class="fa-solid fa-arrow-rotate-left" title="Regresar" id="iconReturnTask"></i>
+            <i class="fa-solid fa-ban" title="Cancelar" id="iconCancelTask"></i>
+            <i class="fa-solid fa-pencil" title="Editar" id="iconUpdateTask"></i>
+            <i class="fa-solid fa-trash-can" title="Eliminar" id="iconDeleteTask"></i>
         </div>
     </div>
 </template>
@@ -168,6 +172,9 @@
 
 
 
+    const Search = document.getElementById("txtSearch");
+    const dateSearch = document.getElementById("dtFechaVencimiento");
+
     const inputs = document.querySelectorAll(".inp");
 
     inputs.forEach(input => {
@@ -199,23 +206,19 @@
         if (selector1.checked == true) {
             inpSearch.classList.add("inpActive");
             inpDate.classList.remove("inpActive");
-            inpSearch.value = "";
+            dateSearch.value = "";
 
         } else {
+
             inpDate.classList.add("inpActive");
             inpSearch.classList.remove("inpActive");
-            inpDate.value = "";
+            Search.value = "";
+
         }
     }
 
 
 
-    document.addEventListener("DOMContentLoaded", async () => {
-        await validarSession();
-        await typeSearch();
-        await PrioridadGetAll();
-        await TaskGetAll();
-    })
 
 
     const templateTask = document.getElementById("templateTask");
@@ -225,13 +228,50 @@
     const containerTask = document.getElementById("containerTask");
 
 
+    document.addEventListener("DOMContentLoaded", async () => {
+        esperar();
+        await validarSession();
+        await typeSearch();
+        await PrioridadGetAll();
+        await TaskGetAll();
+    })
+
+
+    const esperar = async() => {
+        containerTask.innerHTML = `
+                        <div class="d-flex align-items-center">
+                              <strong role="status" class="text-info">Loading...</strong>
+                              <div class="spinner-border ms-auto text-info" aria-hidden="true"></div>
+
+                        </div>`;
+    } 
+    
+    const quitarEspera = async () => {
+        containerTask.innerHTML = "";
+    }
+
+
+
+    Search.addEventListener("keyup", (e)=>{
+
+        console.log(e.key)
+        if (e.key == 'Enter'){
+            TaskGetAll();
+        }
+    });
+
+    
+
+
     const TaskGetAll = async() => {
 
+        esperar();
+       
         let txtSearch = "";
         let dtFechaVencimiento = document.getElementById("dtFechaVencimiento");
 
-        if (document.getElementById("txtSearch").value.trim() == "") { txtSearch = 0 }
-        if (document.getElementById("dtFechaVencimiento").value.trim() == "") { dtFechaVencimiento = 0 }
+        if (document.getElementById("txtSearch").value.trim() == "") { txtSearch = 0 } else { txtSearch = document.getElementById("txtSearch").value.trim() }
+        if (document.getElementById("dtFechaVencimiento").value.trim() == "") { dtFechaVencimiento = 0 } else { dtFechaVencimiento = document.getElementById("dtFechaVencimiento").value.trim() }
 
 
         let session = JSON.parse(localStorage.getItem("account"));
@@ -256,21 +296,76 @@
 
             if (resJsonTaskGetAll.objects.length > 0){
 
+                quitarEspera()
+
                 resJsonTaskGetAll.objects.forEach((task) => {
 
 
                     const cloneTpTask = templateTask.content.cloneNode(true);
 
-                    if (task.idEstatus == 1) {
-                        cloneTpTask.querySelector("#statusInpTask").checked;
+                    if (task.estatus.idEstatus == 1) {
+
+
+                        cloneTpTask.querySelector(".task").removeChild(cloneTpTask.querySelector("#statusInpTask"));
+                        //cloneTpTask.querySelector("#statusInpTask").click();
                         cloneTpTask.querySelector(".task").classList.add("completed");
+
+
+                        cloneTpTask.querySelector(".task__containerActions").removeChild(cloneTpTask.querySelector("#iconCancelTask"));
+                        cloneTpTask.querySelector(".task__containerActions").removeChild(cloneTpTask.querySelector("#iconUpdateTask"));
+
+                        cloneTpTask.querySelector("#iconReturnTask").addEventListener("click", (e) => {
+                            if (!e.target.checked)
+                                UpdateTaskPending(task.idTask);
+                        });
+
                     }
 
 
-                    if (task.idEstatus == 3) {
-                        cloneTpTask.querySelector(".task").removeChild("input");
+                    if (task.estatus.idEstatus == 2) {
+
+                        cloneTpTask.querySelector(".task__containerActions").removeChild(cloneTpTask.querySelector("#iconReturnTask"));
+
+
+                        cloneTpTask.querySelector("#iconUpdateTask").addEventListener("click", () => {
+                            TaskGetById(task.idTask);
+                        });
+                        
+                        cloneTpTask.querySelector("#iconCancelTask").addEventListener("click", (e) => {
+                            UpdateTaskCanceled(task.idTask);
+                        });
+
+                        cloneTpTask.querySelector("#statusInpTask").addEventListener("click", (e) => {
+                            if (e.target.checked)
+                                UpdateTaskCompleted(task.idTask);
+                        });
+
+
+
+                       
+
+
+                    }
+
+
+                    if (task.estatus.idEstatus == 3) {
+
+                        cloneTpTask.querySelector(".task").removeChild(cloneTpTask.querySelector("#statusInpTask"));
                         cloneTpTask.querySelector(".task").classList.add("canceled");
+
+                        cloneTpTask.querySelector("#iconReturnTask").addEventListener("click", () => {
+                                UpdateTaskPending(task.idTask);
+                        });
+                        cloneTpTask.querySelector(".task__containerActions").removeChild(cloneTpTask.querySelector("#iconCancelTask"));
+                        cloneTpTask.querySelector(".task__containerActions").removeChild(cloneTpTask.querySelector("#iconUpdateTask"));
+                       
                     }
+
+
+                    
+
+                    
+
 
                     cloneTpTask.querySelector("#inpTaskName").innerHTML = task.taskName;
 
@@ -288,6 +383,7 @@
 
 
             }else{
+                quitarEspera()
                 containerTask.innerHTML = `
                 <div class="containerIconListEmpty">
                     <i class="fa-solid fa-rectangle-list"></i>
@@ -296,6 +392,7 @@
 
 
         } else {
+            quitarEspera();
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
@@ -355,13 +452,14 @@
 
         e.preventDefault();
 
-        let resValidacion = await validarTaskAdd();
+        let resValidacion = await validarTaskAddAndUpdate();
 
         if (resValidacion) {
 
-            await taskAdd();
+            await taskAddAndUpdate();
 
         } else {
+
 
             alert("Porfavor complete todos los campos para agregar una nueva tarea")
 
@@ -369,7 +467,7 @@
 
     });
 
-
+    const txtIdTask = document.getElementById("IdTask");
     const TaskName = document.getElementById("TaskName");
     const FechaVencimiento = document.getElementById("FechaVencimiento");
     const PrioridadTxt = document.getElementById("Prioridad");
@@ -377,7 +475,7 @@
 
 
 
-    const validarTaskAdd = () => {
+    const validarTaskAddAndUpdate = () => {
 
         let resultValidation = false;
 
@@ -390,11 +488,11 @@
 
 
 
-        if (TaskName.value !== "") {
+        if (TaskName.value.trim() !== "") {
             camposTask["campoTaskName"] = true;
         }
 
-        if (FechaVencimiento.value !== "") {
+        if (FechaVencimiento.value.trim() !== "") {
             camposTask["campoFechaVencimiento"] = true;
         }
 
@@ -402,7 +500,7 @@
             camposTask["campoPrioridadTxt"] = true;
         }
 
-        if (Descripcion.value !== "") {
+        if (Descripcion.value.trim() !== "") {
             camposTask["campoDescripcion"] = true;
         }
 
@@ -416,8 +514,84 @@
     }
 
 
-    const taskAdd = async () => {
 
+
+    const TaskGetById = async(intIdTask) => {
+
+
+        intIdTask = Number(intIdTask);
+
+        let session = JSON.parse(localStorage.getItem("account"));
+
+        let sessionIdUsuario = Number(session.idUsuario);
+
+        const responseTaskGetById = await fetch("http://localhost:5054/api/Task/getById/" + sessionIdUsuario + "/" + intIdTask, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const resJsonTaskGetById = await responseTaskGetById.json();
+
+        if (responseTaskGetById.status == 200) {
+
+
+
+            if (resJsonTaskGetById.correct) {
+
+
+                txtIdTask.value = resJsonTaskGetById.object.idTask;
+                TaskName.value = resJsonTaskGetById.object.taskName;
+                FechaVencimiento.value = resJsonTaskGetById.object.fechaVencimiento;
+                PrioridadTxt.value = resJsonTaskGetById.object.prioridad.idPrioridad;
+                Descripcion.value = resJsonTaskGetById.object.descripcion;
+
+
+            } else {
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: resJsonTaskGetById.message,
+                    footer: ''
+                });
+
+
+            }
+
+
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: resJsonTaskGetById.message,
+                footer: ''
+            });
+        }
+
+
+
+    }
+
+        
+    
+    const btnSubmitAddTask = document.getElementById("btnSubmitAddTask");
+
+
+    const taskAddAndUpdate = async () => {
+
+        btnSubmitAddTask.innerHTML = `
+                    <div class="spinner-border text-info" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+        `;
+                
+        
+        Search.value = "";
+        dateSearch.value = "";
+        
 
         let session = JSON.parse(localStorage.getItem("account"));
 
@@ -425,13 +599,13 @@
 
 
         const task = {
-            "idTask": 0,
+            "idTask": Number(txtIdTask.value),
             "taskName": TaskName.value,
             "descripcion": Descripcion.value,
             "fechaCreacion": "",
             "fechaVencimiento": FechaVencimiento.value,
             "estatus": {
-                "idEstatus": 1,
+                "idEstatus": 2,
                 "estatusName": "string"
             },
             "prioridad": {
@@ -441,39 +615,183 @@
         }
 
 
-        const responseAddTask = await fetch("http://localhost:5054/api/Task/add/" + sessionIdUsuario, {
+        formTask.reset();
+
+
+        if (Number(task.idTask) > 0) {
+            //Update
+            const responseUpdateTask = await fetch("http://localhost:5054/api/Task/update/" + sessionIdUsuario, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(task)
+            });
+
+            const resJsonUpdateTask = await responseUpdateTask.json();
+
+            if (responseUpdateTask.status == 200) {
+
+
+
+                if (resJsonUpdateTask.correct) {
+
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: resJsonUpdateTask.message,
+                        showConfirmButton: false,
+                        timer: 2500
+                    });
+
+                    await TaskGetAll();
+
+                } else {
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: resJsonUpdateTask.message,
+                        footer: ''
+                    });
+
+
+
+                }
+
+
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: resJsonUpdateTask.message,
+                    footer: ''
+                });
+            }
+
+
+
+
+
+        }else{
+
+
+            //Add
+            const responseAddTask = await fetch("http://localhost:5054/api/Task/add/" + sessionIdUsuario, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(task)
+            });
+
+            const resJsonAddTask = await responseAddTask.json();
+
+            if (responseAddTask.status == 200) {
+
+
+
+                if (resJsonAddTask.correct) {
+
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: resJsonAddTask.message,
+                        showConfirmButton: false,
+                        timer: 2500
+                    });
+
+                    await TaskGetAll();
+
+                } else {
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: resJsonAddTask.message,
+                        footer: ''
+                    });
+
+
+
+                }
+
+
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: resJsonAddTask.message,
+                    footer: ''
+                });
+            }
+
+
+
+        }
+
+
+
+
+        
+
+        btnSubmitAddTask.innerHTML = `
+                <i class="fa-solid fa-plus"></i>
+        `;
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+    const UpdateTaskCompleted = async(idTask)=>{
+    
+        const responseUpdateTaskCompleted = await fetch("http://localhost:5054/api/Task/updateCompleted/" + Number(idTask), {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(task)
+            }
         });
 
-        const resJsonAddTask = await responseAddTask.json();
+        const resJsonUpdateTaskCompleted = await responseUpdateTaskCompleted.json();
 
-        if (responseAddTask.status == 200) {
+        if (responseUpdateTaskCompleted.status == 200) {
 
 
 
-            if (resJsonAddTask.correct) {
+            if (resJsonUpdateTaskCompleted.correct) {
 
                 Swal.fire({
                     position: "center",
                     icon: "success",
-                    title: resJsonAddTask.message,
+                    title: resJsonUpdateTaskCompleted.message,
                     showConfirmButton: false,
                     timer: 2500
                 });
 
-                formTask.reset();
+                await TaskGetAll();
 
             } else {
 
                 Swal.fire({
                     icon: "error",
                     title: "Oops...",
-                    text: resJsonAddTask.message,
+                    text: resJsonUpdateTaskCompleted.message,
                     footer: ''
                 });
 
@@ -486,21 +804,139 @@
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: resJsonAddTask.message,
+                text: resJsonUpdateTaskCompleted.message,
+                footer: ''
+            });
+        }
+
+
+    
+    }
+
+
+
+
+
+    const UpdateTaskCanceled = async (idTask) => {
+
+        const responseUpdateTaskCanceled = await fetch("http://localhost:5054/api/Task/updateCanceled/" + Number(idTask), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const resJsonUpdateTaskCanceled = await responseUpdateTaskCanceled.json();
+
+        if (responseUpdateTaskCanceled.status == 200) {
+
+
+
+            if (resJsonUpdateTaskCanceled.correct) {
+
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: resJsonUpdateTaskCanceled.message,
+                    showConfirmButton: false,
+                    timer: 2500
+                });
+
+                await TaskGetAll();
+
+            } else {
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: resJsonUpdateTaskCanceled.message,
+                    footer: ''
+                });
+
+
+
+            }
+
+
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: resJsonUpdateTaskCanceled.message,
                 footer: ''
             });
         }
 
 
 
+    }
 
 
 
 
+
+
+    const UpdateTaskPending = async (idTask) => {
+
+        const responseUpdateTaskPending = await fetch("http://localhost:5054/api/Task/updatePending/" + Number(idTask), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
+
+
+        const resJsonUpdateTaskPending = await responseUpdateTaskPending.json();
+
+        if (responseUpdateTaskPending.status == 200) {
+
+
+
+            if (resJsonUpdateTaskPending.correct) {
+
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: resJsonUpdateTaskPending.message,
+                    showConfirmButton: false,
+                    timer: 2500
+                });
+
+                await TaskGetAll();
+
+            } else {
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: resJsonUpdateTaskPending.message,
+                    footer: ''
+                });
+
+
+
+            }
+
+
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: resJsonUpdateTaskPending.message,
+                footer: ''
+            });
+        }
 
 
 
     }
+
+
+
+
 
 
 
@@ -967,6 +1403,11 @@
         }
 
 
+    #IdTask{
+        display: none;
+    }
+
+
 
     .containerIconListEmpty {
         width: 100%;
@@ -987,7 +1428,7 @@
     .containerTask {
         padding: 5px;
         border-radius: 9px;
-        margin: 20px 0;
+        margin: 15px 0;
     }
 
         .containerTask .task {
@@ -998,29 +1439,31 @@
             color: aliceblue;
             padding: 20px;
             border-radius: 9px;
-            margin: 10px 0;
+            margin: 20px 0;
             border: 1px solid #eeeeee65;
+            transition: .2s;
+            backdrop-filter: blur(5px);
         }
 
             .containerTask .task:hover {
-                transform: translateY(-2px);
-                background-color: #00ffff09;
-                box-shadow: 1px 3px 5px #eee
+                transform: translateY(-3px);
+                box-shadow: 2px 5px 5px rgba(158, 204, 175, 0.197)
             }
 
             .containerTask .task p {
                 padding: 0 15px;
+                text-align: center;
             }
 
-.canceled{
-        border: 1px solid red;
-        background-color: #7f010164;
-}
+    .canceled {
+        border: 1px solid #fc0707c9;
+        background-color: #7f010145;
+    }
 
-.completed{
-        border: 1px solid green;
-        background-color: #017f1464;
-}
+    .completed {
+        border: 1px solid #04c120be;
+        background-color: #017f141f;
+    }
 
 
 

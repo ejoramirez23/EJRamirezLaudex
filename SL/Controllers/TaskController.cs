@@ -34,6 +34,112 @@ namespace SL.Controllers
         }
 
 
+        [HttpPost("update/{idUsuario}")]
+        public IActionResult Update(int idUsuario, [FromBody] ML.Task task)
+        {
+            ML.Result result = BL.Task.Update(task, idUsuario);
+
+
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+
+
+        }
+        
+        
+        
+        
+        
+        
+        [HttpPost("updateCompleted/{idTask}")]
+        public IActionResult UpdateCompleted(int idTask)
+        {
+            ML.Result result = BL.Task.UpdateTaskCompleted(idTask);
+
+
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+
+
+        } 
+        
+
+        [HttpPost("updatePending/{idTask}")]
+        public IActionResult UpdatePending(int idTask)
+        {
+            ML.Result result = BL.Task.UpdateTaskPending(idTask);
+
+
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+
+
+        }
+
+
+
+
+        [HttpPost("updateCanceled/{idTask}")]
+
+        public IActionResult UpdateCanceled(int idTask)
+        {
+
+            ML.Result result = BL.Task.UpdateTaskCanceled(idTask);
+
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+
+
+        }
+
+
+
+
+
+
+        [HttpGet("getById/{idUsuario}/{idTask}")]
+        public IActionResult GetById(int idUsuario, int idTask)
+        {
+
+            ML.Result result = BL.Task.GetById(idUsuario, idTask);
+
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);  
+            }
+
+
+        }
+
+
 
         [HttpGet("getAll/{idUsuario}/{txtSearch}/{dtFechaVencimiento}")]
 
